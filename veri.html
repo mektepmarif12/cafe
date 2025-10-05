@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Veri Analiz Sistemi - Cafe Sipariş Sistemi</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --light-color: #ecf0f1;
+            --dark-color: #34495e;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--dark-color));
+            color: white;
+            padding: 1.5rem 0;
+            text-align: center;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .logo {
+            font-size: 2.2rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            background-color: rgba(255,255,255,0.1);
+            transition: background-color 0.3s;
+            white-space: nowrap;
+        }
+        
+        .nav-links a:hover {
+            background-color: rgba(255,255,255,0.2);
+        }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            overflow: hidden;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+        }
+        
+        .card-title {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--light-color);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        .stat {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding: 8px 0;
+            border-bottom: 1px dashed #eee;
+        }
+        
+        .stat-value {
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+        
+        .positive {
+            color: var(--success-color);
+        }
+        
+        .negative {
+            color: var(--accent-color);
+        }
+        
+        .analytics-section {
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+        
+        .section-title {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--light-color);
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: white;
+            min-width: 150px;
+        }
+        
+        .btn {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            white-space: nowrap;
+        }
+        
+        .btn-primary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        .btn-danger {
+            background-color: var(--accent-color);
+            color: white;
+        }
+        
+        .btn-success {
+            background-color: var(--success-color);
+            color: white;
+        }
+        
+        .btn-warning {
+            background-color: var(--warning-color);
+            color: white;
+        }
+        
+        .btn:hover {
+            opacity: 0.9;
+        }
+        
+        .data-table-container {
+            overflow-x: auto;
+            margin-top: 15px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+        
+        .data-table th, .data-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+            white-space: nowrap;
+        }
+        
+        .data-table th {
+            background-color: var(--light-color);
+            color: var(--primary-color);
+            font-weight: bold;
+            position: sticky;
+            top: 0;
+        }
+        
+        .data-table tr:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .chart-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            height: 400px;
+            overflow: hidden;
+        }
+        
+        .chart-placeholder {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            border: 2px dashed #ddd;
+            color: #777;
+            font-size: 1.1rem;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 4px;
+            color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            display: none;
+            z-index: 1000;
+            max-width: 400px;
+            word-wrap: break-word;
+        }
+        
+        .notification.success {
+            background-color: var(--success-color);
+        }
+        
+        .notification.error {
+            background-color: var(--accent-color);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #777;
+        }
+        
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+        
+        .table-actions {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+        
+        .table-actions .btn {
+            padding: 5px 10px;
+            font-size: 0.8rem;
+        }
+        
+        .products-cell {
+            max-width: 200px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .section-title {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .filters {
+                flex-direction: column;
+            }
+            
+            .filter-select {
+                min-width: 100%;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+            
+            .data-table {
+                font-size: 0.9rem;
+            }
+            
+            .data-table th, .data-table td {
+                padding: 8px 10px;
+            }
+            
+            .chart-container {
+                height: 300px;
+                padding: 15px;
+            }
+            
+            .nav-links {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .nav-links a {
+                width: 200px;
+                text-align: center;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 1.8rem;
+            }
+            
+            .card {
+                padding: 15px;
+            }
+            
+            .analytics-section {
+                padding: 15px;
+            }
+            
+            .stat {
+                flex-direction: column;
+                gap: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">VERİ ANALİZ SİSTEMİ</div>
+            <div class="subtitle">Cafe Sipariş Verileri - Detaylı Analiz ve Raporlama</div>
+            <div class="nav-links">
+                <a href="index.html">Sipariş Sayfası</a>
+                <a href="kontrol.html">Kontrol Paneli</a>
+            </div>
+        </header>
+        
+        <div class="dashboard">
+            <div class="card">
+                <h3 class="card-title">Genel İstatistikler</h3>
+                <div class="stat">
+                    <span>Toplam Sipariş:</span>
+                    <span class="stat-value" id="total-orders">0</span>
+                </div>
+                <div class="stat">
+                    <span>Toplam Gelir:</span>
+                    <span class="stat-value" id="total-revenue">₺0.00</span>
+                </div>
+                <div class="stat">
+                    <span>Ortalama Sipariş:</span>
+                    <span class="stat-value" id="avg-order-value">₺0.00</span>
+                </div>
+                <div class="stat">
+                    <span>En Çok Satan:</span>
+                    <span class="stat-value" id="best-selling">-</span>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3 class="card-title">Bugünkü Performans</h3>
+                <div class="stat">
+                    <span>Bugünkü Sipariş:</span>
+                    <span class="stat-value" id="today-orders">0</span>
+                </div>
+                <div class="stat">
+                    <span>Bugünkü Gelir:</span>
+                    <span class="stat-value" id="today-revenue">₺0.00</span>
+                </div>
+                <div class="stat">
+                    <span>Dünkü Gelir:</span>
+                    <span class="stat-value" id="yesterday-revenue">₺0.00</span>
+                </div>
+                <div class="stat">
+                    <span>Günlük Artış:</span>
+                    <span class="stat-value" id="daily-growth">%0</span>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3 class="card-title">Aylık Analiz</h3>
+                <div class="stat">
+                    <span>Bu Ayın Geliri:</span>
+                    <span class="stat-value" id="monthly-revenue">₺0.00</span>
+                </div>
+                <div class="stat">
+                    <span>Geçen Ayın Geliri:</span>
+                    <span class="stat-value" id="last-month-revenue">₺0.00</span>
+                </div>
+                <div class="stat">
+                    <span>Aylık Artış:</span>
+                    <span class="stat-value" id="monthly-growth">%0</span>
+                </div>
+                <div class="stat">
+                    <span>En İyi Gün:</span>
+                    <span class="stat-value" id="best-day">-</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="analytics-section">
+            <h2 class="section-title">
+                Ürün Performans Analizi
+                <select id="time-filter" class="filter-select">
+                    <option value="all">Tüm Zamanlar</option>
+                    <option value="today">Bugün</option>
+                    <option value="week">Bu Hafta</option>
+                    <option value="month">Bu Ay</option>
+                </select>
+            </h2>
+            
+            <div class="filters">
+                <select id="status-filter" class="filter-select">
+                    <option value="all">Tüm Durumlar</option>
+                    <option value="paid">Ödenen</option>
+                    <option value="pending">Bekleyen</option>
+                    <option value="cancelled">İptal Edilen</option>
+                </select>
+                
+                <button id="apply-filters" class="btn btn-primary">Filtrele</button>
+                <button id="export-data" class="btn btn-success">Verileri Dışa Aktar</button>
+            </div>
+            
+            <div class="data-table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Ürün Adı</th>
+                            <th>Satış Adedi</th>
+                            <th>Toplam Gelir</th>
+                            <th>Ortalama Fiyat</th>
+                            <th>Popülerlik Oranı</th>
+                        </tr>
+                    </thead>
+                    <tbody id="product-performance-body">
+                        <tr>
+                            <td colspan="5" class="empty-state">
+                                <div>📊</div>
+                                <div>Veri yükleniyor...</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="chart-container">
+            <h2 class="section-title">Gelir Trendi</h2>
+            <div class="chart-placeholder" id="revenue-chart">
+                📈 Gelir trendi grafiği burada görüntülenecek<br>
+                <small>(Grafik kütüphanesi entegrasyonu için hazır)</small>
+            </div>
+        </div>
+        
+        <div class="analytics-section">
+            <h2 class="section-title">Tüm Sipariş Kayıtları</h2>
+            
+            <div class="action-buttons">
+                <button id="delete-all" class="btn btn-danger">Tüm Verileri Sil</button>
+                <button id="delete-old" class="btn btn-warning">30 Günden Eski Verileri Sil</button>
+                <button id="delete-cancelled" class="btn btn-warning">İptal Edilen Siparişleri Sil</button>
+            </div>
+            
+            <div class="data-table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Sipariş ID</th>
+                            <th>Tarih</th>
+                            <th>Masa No</th>
+                            <th class="products-cell">Ürünler</th>
+                            <th>Tutar</th>
+                            <th>Durum</th>
+                            <th>İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody id="orders-table-body">
+                        <tr>
+                            <td colspan="7" class="empty-state">
+                                <div>📋</div>
+                                <div>Veri yükleniyor...</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <div class="notification" id="notification-message"></div>
+
+    <script>
+        // Sayfa yüklendiğinde
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verileri yükle
+            loadAnalytics();
+            
+            // Filtre uygula butonu
+            document.getElementById('apply-filters').addEventListener('click', function() {
+                loadAnalytics();
+            });
+            
+            // Verileri dışa aktar butonu
+            document.getElementById('export-data').addEventListener('click', function() {
+                exportData();
+            });
+            
+            // Tüm verileri sil butonu
+            document.getElementById('delete-all').addEventListener('click', function() {
+                if (confirm('TÜM sipariş verilerini silmek istediğinizden emin misiniz? Bu işlem geri alınamaz!')) {
+                    deleteAllData();
+                }
+            });
+            
+            // Eski verileri sil butonu
+            document.getElementById('delete-old').addEventListener('click', function() {
+                if (confirm('30 günden eski tüm sipariş verilerini silmek istediğinizden emin misiniz?')) {
+                    deleteOldData();
+                }
+            });
+            
+            // İptal edilen siparişleri sil butonu
+            document.getElementById('delete-cancelled').addEventListener('click', function() {
+                if (confirm('İptal edilen tüm siparişleri silmek istediğinizden emin misiniz?')) {
+                    deleteCancelledOrders();
+                }
+            });
+            
+            // Her 10 saniyede bir verileri güncelle
+            setInterval(loadAnalytics, 10000);
+        });
+        
+        // Analitik verileri yükle
+        function loadAnalytics() {
+            const orders = JSON.parse(localStorage.getItem('cafeOrders')) || [];
+            
+            // İstatistikleri güncelle
+            updateStatistics(orders);
+            
+            // Ürün performansını güncelle
+            updateProductPerformance(orders);
+            
+            // Sipariş kayıtlarını güncelle
+            updateOrdersTable(orders);
+        }
+        
+        // İstatistikleri güncelle
+        function updateStatistics(orders) {
+            const today = new Date();
+            const yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
+            
+            const thisMonth = today.getMonth();
+            const thisYear = today.getFullYear();
+            const lastMonth = thisMonth === 0 ? 11 : thisMonth - 1;
+            const lastMonthYear = thisMonth === 0 ? thisYear - 1 : thisYear;
+            
+            // Tüm zamanlar için istatistikler
+            const totalOrders = orders.length;
+            const totalRevenue = orders.reduce((sum, order) => sum + order.total, 0);
+            const avgOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
+            
+            // Bugünkü siparişler
+            const todayOrders = orders.filter(order => {
+                const orderDate = new Date(order.timestamp);
+                return orderDate.toDateString() === today.toDateString();
+            });
+            
+            const todayRevenue = todayOrders.reduce((sum, order) => sum + order.total, 0);
+            
+            // Dünkü siparişler
+            const yesterdayOrders = orders.filter(order => {
+                const orderDate = new Date(order.timestamp);
+                return orderDate.toDateString() === yesterday.toDateString();
+            });
+            
+            const yesterdayRevenue = yesterdayOrders.reduce((sum, order) => sum + order.total, 0);
+            
+            // Günlük artış
+            const dailyGrowth = yesterdayRevenue > 0 ? 
+                ((todayRevenue - yesterdayRevenue) / yesterdayRevenue * 100).toFixed(1) : 0;
+            
+            // Bu ayın siparişleri
+            const thisMonthOrders = orders.filter(order => {
+                const orderDate = new Date(order.timestamp);
+                return orderDate.getMonth() === thisMonth && orderDate.getFullYear() === thisYear;
+            });
+            
+            const thisMonthRevenue = thisMonthOrders.reduce((sum, order) => sum + order.total, 0);
+            
+            // Geçen ayın siparişleri
+            const lastMonthOrders = orders.filter(order => {
+                const orderDate = new Date(order.timestamp);
+                return orderDate.getMonth() === lastMonth && orderDate.getFullYear() === lastMonthYear;
+            });
+            
+            const lastMonthRevenue = lastMonthOrders.reduce((sum, order) => sum + order.total, 0);
+            
+            // Aylık artış
+            const monthlyGrowth = lastMonthRevenue > 0 ? 
+                ((thisMonthRevenue - lastMonthRevenue) / lastMonthRevenue * 100).toFixed(1) : 0;
+            
+            // En çok satan ürün
+            const productSales = {};
+            orders.forEach(order => {
+                for (const [item, quantity] of Object.entries(order.items)) {
+                    if (productSales[item]) {
+                        productSales[item] += quantity;
+                    } else {
+                        productSales[item] = quantity;
+                    }
+                }
+            });
+            
+            let bestSellingProduct = '-';
+            let maxSales = 0;
+            
+            for (const [product, sales] of Object.entries(productSales)) {
+                if (sales > maxSales) {
+                    maxSales = sales;
+                    bestSellingProduct = getProductName(product);
+                }
+            }
+            
+            // En iyi gün
+            const dailyRevenue = {};
+            orders.forEach(order => {
+                const orderDate = new Date(order.timestamp).toDateString();
+                if (dailyRevenue[orderDate]) {
+                    dailyRevenue[orderDate] += order.total;
+                } else {
+                    dailyRevenue[orderDate] = order.total;
+                }
+            });
+            
+            let bestDay = '-';
+            let maxDailyRevenue = 0;
+            
+            for (const [day, revenue] of Object.entries(dailyRevenue)) {
+                if (revenue > maxDailyRevenue) {
+                    maxDailyRevenue = revenue;
+                    bestDay = new Date(day).toLocaleDateString('tr-TR');
+                }
+            }
+            
+            // İstatistikleri göster
+            document.getElementById('total-orders').textContent = totalOrders;
+            document.getElementById('total-revenue').textContent = `₺${totalRevenue.toFixed(2)}`;
+            document.getElementById('avg-order-value').textContent = `₺${avgOrderValue.toFixed(2)}`;
+            document.getElementById('best-selling').textContent = bestSellingProduct;
+            
+            document.getElementById('today-orders').textContent = todayOrders.length;
+            document.getElementById('today-revenue').textContent = `₺${todayRevenue.toFixed(2)}`;
+            document.getElementById('yesterday-revenue').textContent = `₺${yesterdayRevenue.toFixed(2)}`;
+            
+            const dailyGrowthElement = document.getElementById('daily-growth');
+            dailyGrowthElement.textContent = `%${dailyGrowth}`;
+            dailyGrowthElement.className = dailyGrowth >= 0 ? 'stat-value positive' : 'stat-value negative';
+            
+            document.getElementById('monthly-revenue').textContent = `₺${thisMonthRevenue.toFixed(2)}`;
+            document.getElementById('last-month-revenue').textContent = `₺${lastMonthRevenue.toFixed(2)}`;
+            
+            const monthlyGrowthElement = document.getElementById('monthly-growth');
+            monthlyGrowthElement.textContent = `%${monthlyGrowth}`;
+            monthlyGrowthElement.className = monthlyGrowth >= 0 ? 'stat-value positive' : 'stat-value negative';
+            
+            document.getElementById('best-day').textContent = bestDay;
+        }
+        
+        // Ürün performansını güncelle
+        function updateProductPerformance(orders) {
+            const timeFilter = document.getElementById('time-filter').value;
+            const statusFilter = document.getElementById('status-filter').value;
+            
+            // Filtrelenmiş siparişleri al
+            let filteredOrders = orders;
+            
+            // Zaman filtresi
+            if (timeFilter !== 'all') {
+                const now = new Date();
+                filteredOrders = filteredOrders.filter(order => {
+                    const orderDate = new Date(order.timestamp);
+                    
+                    switch (timeFilter) {
+                        case 'today':
+                            return orderDate.toDateString() === now.toDateString();
+                        case 'week':
+                            const weekAgo = new Date(now);
+                            weekAgo.setDate(weekAgo.getDate() - 7);
+                            return orderDate >= weekAgo;
+                        case 'month':
+                            return orderDate.getMonth() === now.getMonth() && 
+                                   orderDate.getFullYear() === now.getFullYear();
+                        default:
+                            return true;
+                    }
+                });
+            }
+            
+            // Durum filtresi
+            if (statusFilter !== 'all') {
+                filteredOrders = filteredOrders.filter(order => order.status === statusFilter);
+            }
+            
+            // Ürün performansını hesapla
+            const productStats = {};
+            let totalItemsSold = 0;
+            
+            filteredOrders.forEach(order => {
+                for (const [item, quantity] of Object.entries(order.items)) {
+                    totalItemsSold += quantity;
+                    
+                    if (productStats[item]) {
+                        productStats[item].quantity += quantity;
+                        productStats[item].revenue += quantity * getProductPrice(item);
+                    } else {
+                        productStats[item] = {
+                            quantity: quantity,
+                            revenue: quantity * getProductPrice(item),
+                            price: getProductPrice(item)
+                        };
+                    }
+                }
+            });
+            
+            // Ürün performans tablosunu güncelle
+            const tableBody = document.getElementById('product-performance-body');
+            tableBody.innerHTML = '';
+            
+            if (Object.keys(productStats).length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="empty-state">
+                            <div>📊</div>
+                            <div>Filtrelere uygun veri bulunamadı</div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            // Ürünleri gelire göre sırala
+            const sortedProducts = Object.entries(productStats)
+                .sort((a, b) => b[1].revenue - a[1].revenue);
+            
+            sortedProducts.forEach(([product, stats]) => {
+                const popularity = totalItemsSold > 0 ? 
+                    (stats.quantity / totalItemsSold * 100).toFixed(1) : 0;
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${getProductName(product)}</td>
+                    <td>${stats.quantity}</td>
+                    <td>₺${stats.revenue.toFixed(2)}</td>
+                    <td>₺${stats.price.toFixed(2)}</td>
+                    <td>%${popularity}</td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+        }
+        
+        // Sipariş tablosunu güncelle
+        function updateOrdersTable(orders) {
+            const tableBody = document.getElementById('orders-table-body');
+            tableBody.innerHTML = '';
+            
+            if (orders.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="empty-state">
+                            <div>📋</div>
+                            <div>Henüz sipariş kaydı bulunmamaktadır</div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            // Siparişleri ters sırada göster (en yeni en üstte)
+            orders.slice().reverse().forEach(order => {
+                const orderTime = new Date(order.timestamp).toLocaleString('tr-TR');
+                const tableDisplay = order.tableNumber === 'takeaway' ? 'Paket Servis' : `Masa ${order.tableNumber}`;
+                
+                // Ürün listesini oluştur
+                let productsList = '';
+                for (const [item, quantity] of Object.entries(order.items)) {
+                    productsList += `${getProductName(item)} x ${quantity}, `;
+                }
+                productsList = productsList.slice(0, -2); // Son virgülü kaldır
+                
+                // Durum etiketi
+                let statusBadge = '';
+                if (order.status === 'pending') {
+                    statusBadge = '<span style="color: orange;">Beklemede</span>';
+                } else if (order.status === 'paid') {
+                    statusBadge = '<span style="color: green;">Ödendi</span>';
+                } else if (order.status === 'cancelled') {
+                    statusBadge = '<span style="color: red;">İptal Edildi</span>';
+                }
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>#${order.id}</td>
+                    <td>${orderTime}</td>
+                    <td>${tableDisplay}</td>
+                    <td class="products-cell" title="${productsList}">${productsList}</td>
+                    <td>₺${order.total.toFixed(2)}</td>
+                    <td>${statusBadge}</td>
+                    <td>
+                        <div class="table-actions">
+                            <button class="btn btn-danger" onclick="deleteSingleOrder(${order.id})">Sil</button>
+                        </div>
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+        }
+        
+        // Tüm verileri sil
+        function deleteAllData() {
+            localStorage.removeItem('cafeOrders');
+            showNotification('Tüm veriler başarıyla silindi', 'success');
+            loadAnalytics();
+        }
+        
+        // Eski verileri sil (30 günden eski)
+        function deleteOldData() {
+            const orders = JSON.parse(localStorage.getItem('cafeOrders')) || [];
+            const thirtyDaysAgo = new Date();
+            thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+            
+            const filteredOrders = orders.filter(order => {
+                const orderDate = new Date(order.timestamp);
+                return orderDate >= thirtyDaysAgo;
+            });
+            
+            localStorage.setItem('cafeOrders', JSON.stringify(filteredOrders));
+            showNotification('30 günden eski veriler silindi', 'success');
+            loadAnalytics();
+        }
+        
+        // İptal edilen siparişleri sil
+        function deleteCancelledOrders() {
+            const orders = JSON.parse(localStorage.getItem('cafeOrders')) || [];
+            const filteredOrders = orders.filter(order => order.status !== 'cancelled');
+            
+            localStorage.setItem('cafeOrders', JSON.stringify(filteredOrders));
+            showNotification('İptal edilen siparişler silindi', 'success');
+            loadAnalytics();
+        }
+        
+        // Tekil sipariş sil
+        function deleteSingleOrder(orderId) {
+            if (confirm('Bu siparişi silmek istediğinizden emin misiniz?')) {
+                const orders = JSON.parse(localStorage.getItem('cafeOrders')) || [];
+                const filteredOrders = orders.filter(order => order.id !== orderId);
+                
+                localStorage.setItem('cafeOrders', JSON.stringify(filteredOrders));
+                showNotification('Sipariş başarıyla silindi', 'success');
+                loadAnalytics();
+            }
+        }
+        
+        // Verileri dışa aktar
+        function exportData() {
+            const orders = JSON.parse(localStorage.getItem('cafeOrders')) || [];
+            
+            if (orders.length === 0) {
+                showNotification('Dışa aktarılacak veri bulunamadı', 'error');
+                return;
+            }
+            
+            // CSV formatına dönüştür
+            let csv = 'Sipariş ID,Tarih,Masa No,Ürünler,Tutar,Durum,Notlar\n';
+            
+            orders.forEach(order => {
+                const orderTime = new Date(order.timestamp).toLocaleString('tr-TR');
+                const tableDisplay = order.tableNumber === 'takeaway' ? 'Paket Servis' : `Masa ${order.tableNumber}`;
+                
+                // Ürün listesini oluştur
+                let productsList = '';
+                for (const [item, quantity] of Object.entries(order.items)) {
+                    productsList += `${getProductName(item)} x ${quantity}; `;
+                }
+                productsList = productsList.slice(0, -2); // Son noktalı virgülü kaldır
+                
+                // CSV için özel karakterleri temizle
+                const cleanProducts = productsList.replace(/"/g, '""');
+                const cleanNotes = (order.notes || '').replace(/"/g, '""');
+                
+                csv += `"${order.id}","${orderTime}","${tableDisplay}","${cleanProducts}","${order.total}","${order.status}","${cleanNotes}"\n`;
+            });
+            
+            // CSV dosyasını indir
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            
+            link.setAttribute('href', url);
+            link.setAttribute('download', `cafe_siparis_verileri_${new Date().toISOString().split('T')[0]}.csv`);
+            link.style.visibility = 'hidden';
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showNotification('Veriler başarıyla dışa aktarıldı', 'success');
+        }
+        
+        // Bildirim göster
+        function showNotification(message, type) {
+            const notification = document.getElementById('notification-message');
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.style.display = 'block';
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+        
+        // Yardımcı fonksiyonlar
+        function getProductName(productKey) {
+            const productNames = {
+                'simit': 'Simit',
+                'pogaca': 'Poğaça',
+                'sandvic': 'Sandviç',
+                'turk-kahvesi': 'Türk Kahvesi',
+                'latte': 'Latte',
+                'cay': 'Çay'
+            };
+            
+            return productNames[productKey] || productKey;
+        }
+        
+        function getProductPrice(productKey) {
+            const prices = {
+                'simit': 12.00,
+                'pogaca': 8.00,
+                'sandvic': 25.00,
+                'turk-kahvesi': 15.00,
+                'latte': 22.00,
+                'cay': 8.00
+            };
+            
+            return prices[productKey] || 0;
+        }
+    </script>
+</body>
+</html>
